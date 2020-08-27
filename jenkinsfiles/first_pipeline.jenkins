@@ -4,6 +4,10 @@ pipeline {
     agent {
         label 'master'
     }
+    environment {
+        XEN8_USER = credentials('xen8user')
+        XEN8_IP = credentials('xen8ip')
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
         timestamps()
@@ -11,7 +15,7 @@ pipeline {
     stages {
         stage('first stage'){
             steps {
-                sh 'npm -v'
+                sh 'ssh $XEN8_USER@$XEN8_IP \'cat /etc/issue\''
             }
         }
     }
