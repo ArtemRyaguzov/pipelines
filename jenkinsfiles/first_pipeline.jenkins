@@ -15,13 +15,7 @@ pipeline {
     stages {
         stage('first stage'){
             steps {
-                sh 'ssh $XEN8_USER@$XEN8_IP \'echo "Hello from Jenkins"
-                hostname
-                whoami
-                pwd
-                uptime
-                cat /etc/issue
-                \''
+                sh 'ssh $XEN8_USER@$XEN8_IP \'echo "Hello from Jenkins"; hostname; whoami; pwd; uptime; cat /etc/issue\''
             }
         }
     }
