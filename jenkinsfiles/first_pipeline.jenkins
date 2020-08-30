@@ -7,6 +7,8 @@ pipeline {
     environment {
         XEN8_USER = credentials('xen8user')
         XEN8_IP = credentials('xen8ip')
+        PATH_TO_NOTIFICATION_SCRIPT = credentials('path_to_notification_script')
+        EMAIL_ADDRESS = credentials('notify')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
@@ -17,6 +19,17 @@ pipeline {
             steps {
                 sh 'ssh $XEN8_USER@$XEN8_IP \'echo "Hello from Jenkins"; hostname; whoami; pwd; uptime; cat /etc/issue\''
             }
+        }
+    }
+    post {
+        success {
+            sh "node $PATH_TO_NOTIFICATION_SCRIPT BUILD_SUCCEEDED '${currentBuild.fullDisplayName}' '${env.BUILD_URL}' $EMAIL_ADDRESS"
+        }
+        unstable {
+            sh "node $PATH_TO_NOTIFICATION_SCRIPT BUILD_UNSTABLE '${currentBuild.fullDisplayName}' '${env.BUILD_URL}' $EMAIL_ADDRESS"
+        }
+        failure {
+            sh "node $PATH_TO_NOTIFICATION_SCRIPT BUILD_FAILED '${currentBuild.fullDisplayName}' '${env.BUILD_URL}' $EMAIL_ADDRESS"
         }
     }
 }
